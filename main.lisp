@@ -50,7 +50,7 @@
 		,(dolist (attrib body)
 			(format t "~S ~%" (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
 			
-			`(defun ,(concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib)))
+			`(defun ,(read-from-string (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
 				(object)
 				(gethash ,(string-downcase (string attrib)) (get-attribs-obj obj)) ; TODO: check if working
 			))
