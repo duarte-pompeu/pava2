@@ -1,5 +1,23 @@
 (defun rl()
-	(load "01.lisp")
+	(load "main.lisp")
+)
+
+(setq *class-hashmap* (make-hash-table :test #'equal))
+
+(defun get-class (class-name)
+	(gethash class-name *class-hashmap*)
+)
+
+(defun set-class (class-name class)
+	(setf (gethash class-name *class-hashmap*) class)
+)
+
+(defun get-class-name (class)
+	(first class)
+)
+
+(defun get-class-attributes (class)
+	(second class)
 )
 
 (defmacro def-class (class-name &rest body)
@@ -16,17 +34,20 @@
 	(setq constructor-name (concatenate 'string "make-" (string-downcase (string class-name))))
 	;~ (format t "~S~%" constructor-name)
 	`(progn
-		; definir construtor
-		(defun ,(read-from-string constructor-name)	
-			(,@body) ; args
-			(format t "~S: ~S ~%" ,(string-downcase (string class-name)) (list ,@body)))
-		
 		; definir simbolo com meta informação da classe, por exemplo:
 		; >(def-class pessoa nome idade)
 		; ("pessoa" '(NOME IDADE))
 		; >pessoa
 		; ("pessoa" '(NOME IDADE))
-		(setq ,class-name (cons ,(string-downcase (string class-name)) '('(,@body))))
+		(set-class ,(string-downcase (string class-name))  
+			(list ,(string-downcase (string class-name)) '(,@body)))
+		
+		; definir construtor
+		(defun ,(read-from-string constructor-name)	
+			(,@body) ; args
+			;~ (format t "~S: ~S ~%" ,(string-downcase (string class-name)) (list ,@body))
+			(list ,(get-class (string-downcase (string class-name)))
+				(make-hash-table :test #'equal)))
 ))
 
 
