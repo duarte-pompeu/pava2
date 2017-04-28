@@ -47,14 +47,17 @@
 			(list ,(string-downcase (string class-name)) ; FIXME: use symbol
 				(make-hash-table :test #'equal)))
 		
-		,(dolist (attrib body)
-			(format t "~S ~%" (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
-			
-			`(defun ,(read-from-string (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
-				(object)
-				(gethash ,(string-downcase (string attrib)) (get-attribs-obj obj)) ; TODO: check if working
+		,@(let ((result nil))
+			(dolist (attrib body result)
+				;(format t "~S ~%" (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
+				(push
+					`(defun ,(read-from-string (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
+						(object)
+						(gethash ,(string-downcase (string attrib)) (get-attribs-hash object))) ; TODO: check if working
+					result)
 			))
-))
+	)
+)
 
 
 (def-class pessoa nome idade)
