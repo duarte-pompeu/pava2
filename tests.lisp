@@ -1,3 +1,5 @@
+; To run the tests: $ clisp tests.lisp
+
 (load "lisp-unit.lisp")
 (use-package :lisp-unit)
 (load "main.lisp")

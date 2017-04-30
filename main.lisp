@@ -44,8 +44,16 @@
 		; definir construtor
 		(defun ,(read-from-string constructor-name)	
 			(,@body) ; args
-			(list ,(string-downcase (string class-name)) ; FIXME: use symbol
-				(make-hash-table :test #'equal)))
+			(let ((hashmap (make-hash-table :test #'equal)))
+				
+				; set fields
+				,@(let ((result nil))
+					(dolist (attrib body result)
+						(push `(setf (gethash ,(string-downcase (string attrib)) hashmap) ,attrib)
+							result)))
+				
+				(list ,(string-downcase (string class-name)) ; FIXME: use symbol
+					hashmap)))
 		
 		,@(let ((result nil))
 			(dolist (attrib body result)
