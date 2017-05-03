@@ -16,6 +16,16 @@
 	(assert-equal 18 (pessoa-idade *p1*))
 )
 
+(define-test setters
+	(let ((p2 (make-pessoa :nome "maria" :idade 18)))
+	(set-pessoa-nome p2 "ana")
+	(set-pessoa-idade p2 25)
+	
+	(assert-equal "ana" (pessoa-nome p2))
+	(assert-equal 25 (pessoa-idade p2))
+	
+))
+
 (setq *print-failures* t)
 (setq *print-errors* t)
 (setq *print-summary* t)
