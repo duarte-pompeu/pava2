@@ -43,7 +43,7 @@
 		
 		; definir construtor
 		(defun ,(read-from-string constructor-name)	
-			(,@body) ; args
+			(&key ,@body) ; args
 			(let ((hashmap (make-hash-table :test #'equal)))
 				
 				; set fields
@@ -55,6 +55,7 @@
 				(list ,(string-downcase (string class-name)) ; FIXME: use symbol
 					hashmap)))
 		
+		; FIXME: usar mapcar
 		,@(let ((result nil))
 			(dolist (attrib body result)
 				;(format t "~S ~%" (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
@@ -66,11 +67,3 @@
 			))
 	)
 )
-
-
-(def-class pessoa nome idade)
-(def-class estudante)
-
-(make-pessoa "duarte" 23)
-;(make-pessoa :nome "pompeu" :idade 24) <- devia ser assim!
-(make-estudante)
