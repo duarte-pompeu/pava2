@@ -47,10 +47,12 @@
 			(let ((hashmap (make-hash-table :test #'equal)))
 				
 				; set fields
-				,@(let ((result nil))
-					(dolist (attrib body result)
-						(push `(setf (gethash ,(string-downcase (string attrib)) hashmap) ,attrib)
-							result)))
+				,@(mapcar #'(lambda (attrib) `(setf (gethash ,(string-downcase (string attrib)) hashmap) ,attrib)) body)
+								
+				;~ ,@(let ((result nil))
+					;~ (dolist (attrib body result)
+						;~ (push `(setf (gethash ,(string-downcase (string attrib)) hashmap) ,attrib)
+							;~ result)))
 				
 				(list ,(string-downcase (string class-name)) ; FIXME: use symbol
 					hashmap)))
