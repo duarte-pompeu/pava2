@@ -17,14 +17,18 @@
 )
 
 (define-test setters
-	(let ((p2 (make-pessoa :nome "maria" :idade 18)))
-	(set-pessoa-nome p2 "ana")
-	(set-pessoa-idade p2 25)
+	(let ((p (make-pessoa :nome "maria" :idade 18)))
+	(set-pessoa-nome p "ana")
+	(set-pessoa-idade p 25)
 	
-	(assert-equal "ana" (pessoa-nome p2))
-	(assert-equal 25 (pessoa-idade p2))
-	
+	(assert-equal "ana" (pessoa-nome p))
+	(assert-equal 25 (pessoa-idade p))
 ))
+
+(define-test herança
+	(def-class (estudante pessoa) curso)
+	(make-estudante :nome "abc" :idade 25 :curso "leic")
+)
 
 (setq *print-failures* t)
 (setq *print-errors* t)

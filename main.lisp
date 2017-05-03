@@ -28,18 +28,34 @@
 	(second obj)
 )
 
-(defmacro def-class (class-name &rest body)
+(defmacro def-class (first-arg &rest body)	
+	(let* ((constructor-name nil)
+		(classname nil)
+		(existe-herança nil))
+	
+	(if (listp first-arg)
+		(progn
+			(format t "herança~%")
+			(setq classname (first first-arg))
+			(setq existe-herança t)
+		)
+		(progn 
+			(format t "simples~%")
+			(setq classname first-arg)
+			(setq existe-herança nil)
+	))
+	
 	; splice all values into containing expression - this seems useful to define make-person (arg1 arg2 ... argn)
-	(setq constructor-name (concatenate 'string "make-" (string-downcase (string class-name))))
-	;~ (format t "~S~%" constructor-name)
+	(setq constructor-name (concatenate 'string "make-" (string-downcase (string classname))))
+
 	`(progn
 		; definir simbolo com meta informação da classe, por exemplo:
 		; >(def-class pessoa nome idade)
 		; ("pessoa" '(NOME IDADE))
 		; >pessoa
 		; ("pessoa" '(NOME IDADE))
-		(set-class ,(string-downcase (string class-name))  
-			(list ,(string-downcase (string class-name)) '(,@body)))
+		(set-class ,(string-downcase (string classname))  
+			(list ,(string-downcase (string classname)) '(,@body)))
 		
 		; definir construtor
 		(defun ,(read-from-string constructor-name)	
@@ -54,23 +70,23 @@
 						;~ (push `(setf (gethash ,(string-downcase (string attrib)) hashmap) ,attrib)
 							;~ result)))
 				
-				(list ,(string-downcase (string class-name)) ; FIXME: use symbol
+				(list ,(string-downcase (string classname)) ; FIXME: use symbol
 					hashmap)))
 		
 		
 		
 		; generate getters
 		,@(mapcar #'(lambda (attrib)
-			`(defun ,(read-from-string (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
+			`(defun ,(read-from-string (concatenate 'string (string-downcase (string classname)) "-" (string-downcase (string attrib))))
 					(object)
 				(gethash ,(string-downcase (string attrib)) (get-attribs-hash object))))
 			body)
 		; old code for getters
 		;~ ,@(let ((result nil))
 			;~ (dolist (attrib body result)
-				;~ ;(format t "~S ~%" (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
+				;~ ;(format t "~S ~%" (concatenate 'string (string-downcase (string classname)) "-" (string-downcase (string attrib))))
 				;~ (push
-					;~ `(defun ,(read-from-string (concatenate 'string (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
+					;~ `(defun ,(read-from-string (concatenate 'string (string-downcase (string classname)) "-" (string-downcase (string attrib))))
 						;~ (object)
 						;~ (gethash ,(string-downcase (string attrib)) (get-attribs-hash object))) ; TODO: check if working
 					;~ result)
@@ -78,9 +94,9 @@
 		
 		; generate setters
 		,@(mapcar #'(lambda (attrib)
-			`(defun ,(read-from-string (concatenate 'string "set-" (string-downcase (string class-name)) "-" (string-downcase (string attrib))))
+			`(defun ,(read-from-string (concatenate 'string "set-" (string-downcase (string classname)) "-" (string-downcase (string attrib))))
 					(object new-value)
 				(setf (gethash ,(string-downcase (string attrib)) (get-attribs-hash object)) new-value)))
 			body)
 	)
-)
+))
