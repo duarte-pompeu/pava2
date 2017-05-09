@@ -36,12 +36,12 @@
 	
 	(if (listp first-arg)
 		(progn
-			(format t "herança~%")
+			(format t "com herança~%")
 			(setq classname (first first-arg))
 			(setq existe-herança t)
 		)
 		(progn 
-			(format t "simples~%")
+			(format t "sem herança~%")
 			(setq classname first-arg)
 			(setq existe-herança nil)
 	))
@@ -52,18 +52,22 @@
 	; check for inheritance
 	(if (not existe-herança)
 		(setq class-fields body) ; no inherited fields
-		(let ((superclass-attribs (get-class-attributes (get-class (string-downcase (string (second first-arg))))))
+		(let ((superclass-attribs nil)
 			 (result nil))
 			(setq class-fields body)
-			(dolist (attrib superclass-attribs result)
-				(if (not (member attrib class-fields)) (push attrib result))
+			(dolist (superclass (rest first-arg) result)
+				(format t "processing superclass ~S ~%" superclass)
+				(dolist (attrib (get-class-attributes (get-class (string-downcase (string superclass)))) result)
+					(if (not (member attrib class-fields)) (push attrib result))
+				)
+				(format t "current result ~S ~%" result)
 			)
 			(format t "result ~S ~%" result)
 			(setq class-fields (concatenate 'list class-fields result))
 			(format t "all class fields ~S ~%" class-fields)
 		)		
 	)	
-	(format t "all class fields ~S ~%" class-fields)
+	
 	
 	`(progn
 		; definir simbolo com meta informação da classe, por exemplo:

@@ -6,6 +6,8 @@
 
 (def-class pessoa nome idade)
 (setq *p1* (make-pessoa :nome "joão" :idade 18))
+(def-class a x)
+(def-class b y)
 
 (define-test class
 	(assert-equal "pessoa" (get-obj-class *p1*))
@@ -44,14 +46,12 @@
 ))
 
 (define-test herança-multipla
-	(def-class a x)
-	(def-class b y)
 	(def-class (c a b) z)
-	(let ((c (make-c :x 1 :y 2 :z 3)))
+	(let ((i (make-c :x 1 :y 2 :z 3)))
 
-	(assert-equal 1 (c-x c))
-	(assert-equal 2 (c-y c))
-	(assert-equal 3 (c-z c))
+	(assert-equal 1 (c-x i))
+	(assert-equal 2 (c-y i))
+	(assert-equal 3 (c-z i))
 ))
 
 (setq *print-failures* t)
