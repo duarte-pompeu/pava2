@@ -43,6 +43,17 @@
 	(assert-equal "leic" (aluno-curso a))
 ))
 
+(define-test herança-multipla
+	(def-class a x)
+	(def-class b y)
+	(def-class (c a b) z)
+	(let ((c (make-c :x 1 :y 2 :z 3)))
+
+	(assert-equal 1 (c-x c))
+	(assert-equal 2 (c-y c))
+	(assert-equal 3 (c-z c))
+))
+
 (setq *print-failures* t)
 (setq *print-errors* t)
 (setq *print-summary* t)
