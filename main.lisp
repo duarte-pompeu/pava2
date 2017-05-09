@@ -36,12 +36,12 @@
 	
 	(if (listp first-arg)
 		(progn
-			(format t "com herança~%")
+			;~ (format t "com herança~%")
 			(setq classname (first first-arg))
 			(setq existe-herança t)
 		)
 		(progn 
-			(format t "sem herança~%")
+			;~ (format t "sem herança~%")
 			(setq classname first-arg)
 			(setq existe-herança nil)
 	))
@@ -56,45 +56,35 @@
 			 (result nil))
 			(setq class-fields body)
 			(dolist (superclass (rest first-arg) result)
-				(format t "processing superclass ~S ~%" superclass)
+				;~ (format t "processing superclass ~S ~%" superclass)
 				(dolist (attrib (get-class-attributes (get-class (string-downcase (string superclass)))) result)
 					(if (not (member attrib class-fields)) (push attrib result))
 				)
-				(format t "current result ~S ~%" result)
+				;~ (format t "current result ~S ~%" result)
 			)
-			(format t "result ~S ~%" result)
+			;~ (format t "result ~S ~%" result)
 			(setq class-fields (concatenate 'list class-fields result))
-			(format t "all class fields ~S ~%" class-fields)
-		)		
-	)	
-	
+			;~ (format t "all class fields ~S ~%" class-fields)
+	))	
 	
 	`(progn
-		; definir simbolo com meta informação da classe, por exemplo:
+		; create class and put it in classes map
 		; >(def-class pessoa nome idade)
-		; ("pessoa" '(NOME IDADE))
-		; >pessoa
 		; ("pessoa" '(NOME IDADE))
 		(set-class ,(string-downcase (string classname))  
 			(list ,(string-downcase (string classname)) '(,@class-fields)))
 		
-		; definir construtor
+		; generate constructor
 		(defun ,(read-from-string constructor-name)	
 			(&key ,@class-fields) ; args
 			(let ((hashmap (make-hash-table :test #'equal)))
 				
 				; set fields
 				,@(mapcar #'(lambda (attrib) `(setf (gethash ,(string-downcase (string attrib)) hashmap) ,attrib)) class-fields)
-								
-				;~ ,@(let ((result nil))
-					;~ (dolist (attrib class-fields result)
-						;~ (push `(setf (gethash ,(string-downcase (string attrib)) hashmap) ,attrib)
-							;~ result)))
+				; old code with do list (check deb5431a35121c3972a44d380e1a218b48ece3bb or previous)
 				
 				(list ,(string-downcase (string classname)) ; FIXME: use symbol
 					hashmap)))
-		
-		
 		
 		; generate getters
 		,@(mapcar #'(lambda (attrib)
@@ -102,16 +92,7 @@
 					(object)
 				(gethash ,(string-downcase (string attrib)) (get-attribs-hash object))))
 			class-fields)
-		; old code for getters
-		;~ ,@(let ((result nil))
-			;~ (dolist (attrib class-fields result)
-				;~ ;(format t "~S ~%" (concatenate 'string (string-downcase (string classname)) "-" (string-downcase (string attrib))))
-				;~ (push
-					;~ `(defun ,(read-from-string (concatenate 'string (string-downcase (string classname)) "-" (string-downcase (string attrib))))
-						;~ (object)
-						;~ (gethash ,(string-downcase (string attrib)) (get-attribs-hash object))) ; TODO: check if working
-					;~ result)
-			;~ ))
+		; old code for getters (check deb5431a35121c3972a44d380e1a218b48ece3bb or previous)
 		
 		; generate setters
 		,@(mapcar #'(lambda (attrib)
