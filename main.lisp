@@ -26,18 +26,24 @@
 	(third class)
 )
 
-;~ (defun get-super-from-hierarchy (class)
-	;~ (get-super-aux (get-superclasses class) '())
-;~ )
-
-;~ (defun get-super-aux (lst result)
-	;~ (if (equal lst nil)
-		;~ result
-		;~ (progn
-			;~ (get-super-aux '(get-superclasses(first)) result)
-			;~ (get-super-aux (rest lst) (concatenate 'list result (get-superclasses (first lst)))))
-;~ )
-
+(defun get-all-superclasses (class)
+; FIXME: not checking potential edge cases, like stoping if class to process is already a confirmed superclass
+	(let ((supers '())
+		(to-process (get-superclasses (get-class class)))
+		(current-class nil))
+		
+		;~ (format t "arg: ~S~%" class)
+		
+		(loop while (not (null (first to-process)))
+		do (progn
+			(setq current-class (first to-process))
+			(format t "current: ~S~%" current-class)
+			(setq to-process (rest to-process))
+			(push current-class supers)
+			(setq to-process (concatenate 'list to-process (get-superclasses (get-class (string-downcase (string current-class))))))))
+		
+		(format t "supers: ~S ~%" supers)
+supers))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -98,7 +104,7 @@
 				(if existe-herança
 					(progn 
 					;~ (format t "rest: ~S~%" (rest first-arg))
-					(rest first-arg))
+					(mapcar (lambda (x) (string-downcase (string x))) (rest first-arg)))
 					'()
 	)))
 	`(progn
@@ -137,9 +143,15 @@
 			;~ (format t "obj: ~S~%" object)
 			;~ (format t "superclasses: ~S~%" (get-superclasses (get-class (get-obj-class object))))
 			;~ (format t "class: ~S~%" (read-from-string (get-obj-class object)))
-			(cond ((equal (get-obj-class object) ,(string-downcase (string classname))) T)
-				;~ ((member-if #'(lambda (x) (equal x (read-from-string (get-obj-class object))) (get-superclasses object)))
-				((not (equal nil (member ',(read-from-string (string-downcase (string classname))) (get-superclasses (get-class (get-obj-class object)))))) T)
+			
+			(cond 
+			; simplest case: macro class == obj class
+			((equal (get-obj-class object) ,(string-downcase (string classname))) T)
+				
+			; harder case: macro class == 1 of object superclasses
+			((member-if #'(lambda (x) (equal x ,(string-downcase (string classname)))) (get-all-superclasses (get-class-name object))) T)
+			;~ ((not (equal nil (member ',(read-from-string (string-downcase (string classname))) (get-all-superclasses (get-class (get-obj-class object)))))) T)
 			))
 	)
 ))
+ 

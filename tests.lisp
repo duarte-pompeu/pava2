@@ -9,6 +9,7 @@
 (def-class (estudante pessoa) curso)
 (def-class (aluno pessoa) nome curso)
 (def-class (investigador aluno) tese)
+(setq *a1* (make-aluno :nome "joão" :idade 18 :curso "leic"))
 
 (define-test class
 	"classes"
@@ -55,23 +56,10 @@
 	(assert-equal "leic" (aluno-curso a))
 ))
 
-(def-class a x)
-(def-class b y)
+(def-class aa x)
+(def-class bb y)
 (define-test herança-multipla
 	"teste para herança multipla, atributos distintos"
-
-	(def-class (c a b) z)
-	(let ((i (make-c :x 1 :y 2 :z 3)))
-
-	(assert-equal 1 (c-x i))
-	(assert-equal 2 (c-y i))
-	(assert-equal 3 (c-z i))
-))
-
-(def-class aa x y)
-(def-class bb x y)
-(define-test herança-multipla-2
-	"teste para herança multipla, atributos com mesmo nome nas superclasses"
 
 	(def-class (cc aa bb) z)
 	(let ((i (make-cc :x 1 :y 2 :z 3)))
@@ -82,21 +70,38 @@
 ))
 
 (def-class aaa x y)
-(def-class bbb y z)
-(define-test herança-multipla-3
-	"teste para herança multipla, atributos com mesmo nome entre sub e superclasses"
+(def-class bba x y)
+(define-test herança-multipla-2
+	"teste para herança multipla, atributos com mesmo nome nas superclasses"
 
-	(def-class (ccc aaa bbb) z w)
-	(let ((i (make-ccc :x 1 :y 2 :z 3 :w 4)))
+	(def-class (ccc aaa bbb) z)
+	(let ((i (make-ccc :x 1 :y 2 :z 3)))
 
 	(assert-equal 1 (ccc-x i))
 	(assert-equal 2 (ccc-y i))
 	(assert-equal 3 (ccc-z i))
-	(assert-equal 4 (ccc-w i))
+))
+
+(def-class aaaa x y)
+(def-class bbbb y z)
+(define-test herança-multipla-3
+	"teste para herança multipla, atributos com mesmo nome entre sub e superclasses"
+
+	(def-class (cccc aaaa bbbb) z w)
+	(let ((i (make-cccc :x 1 :y 2 :z 3 :w 4)))
+
+	(assert-equal 1 (cccc-x i))
+	(assert-equal 2 (cccc-y i))
+	(assert-equal 3 (cccc-z i))
+	(assert-equal 4 (cccc-w i))
 ))
 
 (define-test recognizer-simples
 	(assert-true (pessoa? *p1*))
+)
+
+(define-test recognizer-simples-falso
+	(assert-false (aluno? *p1*))
 )
 
 (define-test recognizer-multiple
@@ -104,6 +109,27 @@
 	
 	(assert-true (investigador? x))
 	(assert-true (aluno? x))
+	(assert-true (pessoa? x))
+))
+
+(define-test recognizer-multiple-falso
+	(let ((x (make-aluno :nome "joao" :idade 30 :curso "MEIC")))
+	
+	(assert-false (investigador? x))
+	(assert-true (aluno? x))
+	(assert-true (pessoa? x))
+))
+
+
+(def-class (a pessoa))
+(def-class (b a))
+(def-class (c b))
+(def-class (d b))
+(def-class (e c d))
+(define-test recognizer-loop
+	"tentar gerar hierarquia problematica"
+
+	(let ((x (make-e :nome "missingno" :idade -9999)))
 	(assert-true (pessoa? x))
 ))
 
