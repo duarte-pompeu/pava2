@@ -6,6 +6,8 @@
 
 (def-class pessoa nome idade)
 (setq *p1* (make-pessoa :nome "joão" :idade 18))
+(def-class (estudante pessoa) curso)
+(def-class (aluno pessoa) nome curso)
 
 (define-test class
 	"classes"
@@ -33,8 +35,7 @@
 
 (define-test herança
 	"herança simples"
-
-	(def-class (estudante pessoa) curso)
+	
 	(let ((e (make-estudante :nome "abc" :idade 25 :curso "leic")))
 
 	(assert-equal "abc" (estudante-nome e))
@@ -45,7 +46,7 @@
 (define-test herança-duplicados
 	"teste para herança simples, atributos duplicados"
 
-	(def-class (aluno pessoa) nome curso)
+	
 	(let ((a (make-aluno :nome "abc" :idade 25 :curso "leic")))
 
 	(assert-equal "abc" (aluno-nome a))
@@ -91,6 +92,17 @@
 	(assert-equal 2 (ccc-y i))
 	(assert-equal 3 (ccc-z i))
 	(assert-equal 4 (ccc-w i))
+))
+
+(define-test recognizer-simples
+	(assert-true (pessoa? *p1*))
+)
+
+(define-test recognizer-multiple
+	(let ((a (make-aluno :nome "joao" :idade 30 :curso "LEIC")))
+
+	(assert-true (aluno? a))
+	(assert-true (pessoa? a))
 ))
 
 

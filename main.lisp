@@ -12,6 +12,8 @@
 	(setf (gethash class-name *class-hashmap*) class)
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun get-class-name (class)
 	(first class)
 )
@@ -23,6 +25,8 @@
 (defun get-superclasses (class)
 	(third class)
 )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun get-obj-class (obj)
 	(first obj)
@@ -112,5 +116,16 @@
 					(object new-value)
 				(setf (gethash ,(string-downcase (string attrib)) (get-attribs-hash object)) new-value)))
 			class-fields)
+		
+		; generate recognizer
+		(defun ,(read-from-string (concatenate 'string (string-downcase (string classname)) "?"))
+			(object)
+			;~ (format t "obj: ~S~%" object)
+			;~ (format t "superclasses: ~S~%" (get-superclasses (get-class (get-obj-class object))))
+			;~ (format t "class: ~S~%" (read-from-string (get-obj-class object)))
+			(cond ((equal (get-obj-class object) ,(string-downcase (string classname))) T)
+				;~ ((member-if #'(lambda (x) (equal x (read-from-string (get-obj-class object))) (get-superclasses object)))
+				((not (equal nil (member ',(read-from-string (string-downcase (string classname))) (get-superclasses (get-class (get-obj-class object)))))) T)
+			))
 	)
 ))
