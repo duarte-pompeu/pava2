@@ -20,6 +20,10 @@
 	(second class)
 )
 
+(defun get-superclasses (class)
+	(third class)
+)
+
 (defun get-obj-class (obj)
 	(first obj)
 )
@@ -65,14 +69,21 @@
 			;~ (format t "result ~S ~%" result)
 			(setq class-fields (concatenate 'list class-fields result))
 			;~ (format t "all class fields ~S ~%" class-fields)
-	))	
+	))
 	
+	; create class and put it in classes map
+	; >(def-class pessoa nome idade)
+	; ("pessoa" '(NOME IDADE))
+	(set-class (string-downcase (string classname))  
+			(list
+				(string-downcase (string classname)) 
+				class-fields
+				(if existe-herança
+					(progn (format t "rest: ~S~%" (rest first-arg))
+					(rest first-arg))
+					'()
+	)))
 	`(progn
-		; create class and put it in classes map
-		; >(def-class pessoa nome idade)
-		; ("pessoa" '(NOME IDADE))
-		(set-class ,(string-downcase (string classname))  
-			(list ,(string-downcase (string classname)) '(,@class-fields)))
 		
 		; generate constructor
 		(defun ,(read-from-string constructor-name)	
@@ -87,6 +98,7 @@
 					hashmap)))
 		
 		; generate getters
+		; usar recognizer para verificar se pode ser aplicada ao objecto
 		,@(mapcar #'(lambda (attrib)
 			`(defun ,(read-from-string (concatenate 'string (string-downcase (string classname)) "-" (string-downcase (string attrib))))
 					(object)
