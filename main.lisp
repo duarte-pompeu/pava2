@@ -96,7 +96,8 @@
 				(string-downcase (string classname)) 
 				class-fields
 				(if existe-herança
-					(progn (format t "rest: ~S~%" (rest first-arg))
+					(progn 
+					;~ (format t "rest: ~S~%" (rest first-arg))
 					(rest first-arg))
 					'()
 	)))

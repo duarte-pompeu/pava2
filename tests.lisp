@@ -8,6 +8,7 @@
 (setq *p1* (make-pessoa :nome "joão" :idade 18))
 (def-class (estudante pessoa) curso)
 (def-class (aluno pessoa) nome curso)
+(def-class (investigador aluno) tese)
 
 (define-test class
 	"classes"
@@ -99,10 +100,11 @@
 )
 
 (define-test recognizer-multiple
-	(let ((a (make-aluno :nome "joao" :idade 30 :curso "LEIC")))
-
-	(assert-true (aluno? a))
-	(assert-true (pessoa? a))
+	(let ((x (make-investigador :nome "joao" :idade 30 :curso "DEIC" :tese "optimizacao de sintaxe lisp")))
+	
+	(assert-true (investigador? x))
+	(assert-true (aluno? x))
+	(assert-true (pessoa? x))
 ))
 
 
