@@ -26,6 +26,19 @@
 	(third class)
 )
 
+;~ (defun get-super-from-hierarchy (class)
+	;~ (get-super-aux (get-superclasses class) '())
+;~ )
+
+;~ (defun get-super-aux (lst result)
+	;~ (if (equal lst nil)
+		;~ result
+		;~ (progn
+			;~ (get-super-aux '(get-superclasses(first)) result)
+			;~ (get-super-aux (rest lst) (concatenate 'list result (get-superclasses (first lst)))))
+;~ )
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun get-obj-class (obj)
