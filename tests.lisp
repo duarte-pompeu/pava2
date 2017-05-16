@@ -97,14 +97,25 @@
 ))
 
 (define-test recognizer-simples
+	"assegurar que (pessoa? [instancia de pessoa] é verdade"
 	(assert-true (pessoa? *p1*))
 )
 
 (define-test recognizer-simples-falso
+	"assegurar que (aluno? [instancia de pessoa] é falso"
 	(assert-false (aluno? *p1*))
 )
 
+(define-test recognizer-not-objects
+	"make sure recognizers for non-objects return false gracely, without crashes"
+	(assert-false (pessoa? 30))
+	(assert-false (aluno? '()))
+	(assert-false (investigador? "abc"))
+	(assert-false (estudante? '((123) (456))))
+)
+
 (define-test recognizer-multiple
+	"recognizer para polimorfismo"
 	(let ((x (make-investigador :nome "joao" :idade 30 :curso "DEIC" :tese "optimizacao de sintaxe lisp")))
 	
 	(assert-true (investigador? x))
@@ -113,11 +124,16 @@
 ))
 
 (define-test recognizer-multiple-falso
+	"recognizer false: assegurar que (investigador? [instancia de aluno]) é falso"
 	(let ((x (make-aluno :nome "joao" :idade 30 :curso "MEIC")))
 	
 	(assert-false (investigador? x))
 	(assert-true (aluno? x))
 	(assert-true (pessoa? x))
+	(assert-equal "joao" (pessoa-nome x))
+	(assert-equal "joao" (aluno-nome x))
+	(assert-equal 30 (pessoa-idade x))
+	(assert-equal "MEIC" (aluno-curso x))
 ))
 
 
@@ -129,8 +145,10 @@
 (define-test recognizer-loop
 	"tentar gerar hierarquia problematica"
 
-	(let ((x (make-e :nome "missingno" :idade -9999)))
+	(let ((x (make-e :nome "qwerty" :idade 4321)))
 	(assert-true (pessoa? x))
+	(assert-equal "qwerty" (pessoa-nome x))
+	(assert-equal 4321 (pessoa-idade x))
 ))
 
 

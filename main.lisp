@@ -5,29 +5,34 @@
 (setq *class-hashmap* (make-hash-table :test #'equal))
 
 (defun get-class (class-name)
+	"recebe o nome de uma classe, procura-a no hashmap e retorna a estrutura de dados correspondente, caso exista"
 	(gethash class-name *class-hashmap*)
 )
 
 (defun set-class (class-name class)
+	"guarda uma classe no mapa de classes"
 	(setf (gethash class-name *class-hashmap*) class)
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun get-class-name (class)
+	"recebe uma classe, retorna o seu nome"
 	(first class)
 )
 
 (defun get-class-attributes (class)
+	"recebe uma classe, retorna uma lista com os seus atributos"
 	(second class)
 )
 
 (defun get-superclasses (class)
+	"recebe uma classe, retorna uma lista com o nome das suas superclasses directas"
 	(third class)
 )
 
 (defun get-all-superclasses (class)
-; FIXME: not checking potential edge cases, like stoping if class to process is already a confirmed superclass
+	"recebe o nome de uma classe, retorna uma lista com todas as suas superclasses"
 	(let ((supers '())
 		(to-process (get-superclasses (get-class class)))
 		(current-class nil))
@@ -37,25 +42,28 @@
 		(loop while (not (null (first to-process)))
 		do (progn
 			(setq current-class (first to-process))
-			(format t "current: ~S~%" current-class)
+			;~ (format t "current: ~S~%" current-class)
 			(setq to-process (rest to-process))
 			(push current-class supers)
 			(setq to-process (concatenate 'list to-process (get-superclasses (get-class (string-downcase (string current-class))))))))
 		
-		(format t "supers: ~S ~%" supers)
+		;~ (format t "supers: ~S ~%" supers)
 supers))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun get-obj-class (obj)
+	"recebe um objecto, retorna o nome da sua classe"
 	(first obj)
 )
 
 (defun get-attribs-hash (obj)
+	"recebe um objecto, retorna o seu hashmap de atributos e valores"
 	(second obj)
 )
 
-(defmacro def-class (first-arg &rest body)	
+(defmacro def-class (first-arg &rest body)
+	
 	(let* ((constructor-name nil)
 		(classname nil)
 		(existe-herança nil)
@@ -145,6 +153,10 @@ supers))
 			;~ (format t "class: ~S~%" (read-from-string (get-obj-class object)))
 			
 			(cond 
+			; casos em que estutura de dados não corresponde aos nossos objectos
+			((not (listp object)) nil)
+			((not (equal 2 (length object))) nil)
+			
 			; simplest case: macro class == obj class
 			((equal (get-obj-class object) ,(string-downcase (string classname))) T)
 				
