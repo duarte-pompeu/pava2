@@ -49,7 +49,7 @@
 	"recebe um objecto, retorna o seu hashmap de atributos e valores"
 	(second obj))
 
-(defmacro def-class (first-arg &rest body)
+(defmacro def-class (first-arg &rest args)
 
 	(let* ((constructor-name nil)
 		(classname nil)
@@ -65,7 +65,7 @@
 			(setq classname first-arg)
 			(setq existe-herança nil)))
 
-	(loop for i in body
+	(loop for i in args
 	do (if (listp i)
 		(setf attributes (append attributes (list (first i))))
 		(setf attributes (append attributes (list i)))))
@@ -89,7 +89,7 @@
 				(setq class-fields (concatenate 'list class-fields (list (first field))))
 				(setq class-fields (concatenate 'list class-fields (list field)))))
 
-			(setq body (concatenate 'list body result))))
+			(setq args (concatenate 'list args result))))
 
 	; create class and put it in classes map
 	; >(def-class pessoa nome idade)
@@ -97,7 +97,7 @@
 	(set-class (string-downcase (string classname))
 			(list
 				(string-downcase (string classname))
-				body
+				args
 				(if existe-herança
 					(progn
 					(mapcar (lambda (x) (string-downcase (string x))) (rest first-arg)))
@@ -107,7 +107,7 @@
 
 		; generate constructor
 		(defun ,(read-from-string constructor-name)
-			(&key ,@body) ; args
+			(&key ,@args) ; args
 			(let ((hashmap (make-hash-table :test #'equal)))
 
 				; set fields
@@ -139,12 +139,12 @@
 			(object)
 
 			(cond
-			; casos em que estutura de dados não corresponde aos nossos objectos
-			((not (listp object)) nil)
-			((not (equal 2 (length object))) nil)
+				; cases where data structure is not an object
+				((not (listp object)) nil)
+				((not (equal 2 (length object))) nil)
 
-			; simplest case: macro class == obj class
-			((equal (get-obj-class object) ,(string-downcase (string classname))) T)
+				; simplest case: macro class == obj class
+				((equal (get-obj-class object) ,(string-downcase (string classname))) T)
 
-			; harder case: macro class == 1 of object superclasses
-			((member-if #'(lambda (x) (equal x ,(string-downcase (string classname)))) (get-all-superclasses (get-class-name object))) T))))))
+				; harder case: macro class == 1 of object superclasses
+				((member-if #'(lambda (x) (equal x ,(string-downcase (string classname)))) (get-all-superclasses (get-class-name object))) T))))))
