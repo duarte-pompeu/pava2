@@ -80,9 +80,6 @@ supers))
 		(setf attributes (append attributes (list (first i))))
 		(setf attributes (append attributes (list i)))))
 	
-	(format t "body: ~S~%" body)
-	(format t "attributes: ~S~%" attributes)
-	
 	
 	; splice all values into containing expression - this seems useful to define make-person (arg1 arg2 ... argn)
 	(setq constructor-name (concatenate 'string "make-" (string-downcase (string classname))))
@@ -98,7 +95,13 @@ supers))
 					(if (not (member attrib class-fields)) (push attrib result))
 				)
 			)
-			(setq class-fields (concatenate 'list class-fields result))
+
+			; get attributes from hashmap, which can have attributes or a lists with (attribute default-value)
+			(loop for field in result
+			do (if (listp field)
+				(setq class-fields (concatenate 'list class-fields (list (first field))))
+				(setq class-fields (concatenate 'list class-fields (list field)))))
+			
 			(setq body (concatenate 'list body result))
 	))
 	
@@ -108,7 +111,7 @@ supers))
 	(set-class (string-downcase (string classname))  
 			(list
 				(string-downcase (string classname)) 
-				class-fields
+				body
 				(if existe-herança
 					(progn 
 					(mapcar (lambda (x) (string-downcase (string x))) (rest first-arg)))

@@ -175,6 +175,15 @@
 	(assert-equal 2 (foo-b x))
 	(assert-equal 3 (bar-c x))
 	(assert-equal 4 (bar-d x))))
+
+(define-test defaults--inheritance
+	(let ((x (make-bar :a 10 :c 30)))
+	
+	(assert-true (bar? x))
+	(assert-equal 10 (bar-a x))
+	(assert-equal 2 (foo-b x))
+	(assert-equal 30 (bar-c x))
+	(assert-equal 4 (bar-d x))))
 	
 (setq *print-failures* t)
 (setq *print-errors* t)
