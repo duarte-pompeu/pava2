@@ -28,8 +28,7 @@
 (define-test pava-1
 	(let ((s (make-student :name "Paul" :age 21 :course "Informatics")))
 		(assert-equal "Paul" (person-name s))
-		(assert-equal "Informatics" (student-course s))
-))
+		(assert-equal "Informatics" (student-course s))))
 
 (define-test pava-2
 	(let ((m (make-ist-student :name "Maria" :course "IA" :activity "Tennis")))
@@ -40,8 +39,7 @@
 		(assert-equal "Maria" (ist-student-name m))
 		(assert-equal "Maria" (person-name m))
 		(assert-equal "Tennis" (sportsman-activity m))
-		(assert-equal "Tennis" (ist-student-activity m))
-))
+		(assert-equal "Tennis" (ist-student-activity m))))
 
 (define-test pava-3
 	(let ((b (make-phd-student :name "Brian" :age 28 :course "Informatics" :activity "Soccer" :group "ESW" :thesis "Code Migration")))
@@ -50,15 +48,14 @@
 		(assert-true (student? b))
 		(assert-true (sportsman? b))
 		(assert-true (phd-student? b))
-		
+
 		(assert-equal "Code Migration" (phd-student-thesis b))
 		(assert-equal "Brian" (student-name b))
 		(assert-equal "ESW" (phd-student-group b))
-		(assert-equal "Brian" (phd-student-name b))
-))
+		(assert-equal "Brian" (phd-student-name b))))
 
 (setq *print-failures* t)
 (setq *print-errors* t)
 (setq *print-summary* t)
 (run-tests :all)
-		
+

@@ -147,8 +147,4 @@
 			((equal (get-obj-class object) ,(string-downcase (string classname))) T)
 
 			; harder case: macro class == 1 of object superclasses
-			((member-if #'(lambda (x) (equal x ,(string-downcase (string classname)))) (get-all-superclasses (get-class-name object))) T)
-			))
-	)
-))
-
+			((member-if #'(lambda (x) (equal x ,(string-downcase (string classname)))) (get-all-superclasses (get-class-name object))) T))))))
