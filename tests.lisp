@@ -24,6 +24,11 @@
 	(assert-equal 18 (pessoa-idade *p1*))
 )
 
+(def-class animal nome)
+(define-test bad-getters
+	"verify that sends error"
+	(assert-error 'simple-error (animal-nome *p1*)))
+
 (define-test setters
 	"setters"
 
@@ -32,8 +37,11 @@
 	(set-pessoa-idade p 25)
 	
 	(assert-equal "ana" (pessoa-nome p))
-	(assert-equal 25 (pessoa-idade p))
-))
+	(assert-equal 25 (pessoa-idade p))))
+
+(define-test bad-setters
+	"verify that sends error"
+	(assert-error 'simple-error (set-animal-nome *p1* "bobi")))
 
 (define-test herança
 	"herança simples"
