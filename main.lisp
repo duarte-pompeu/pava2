@@ -62,7 +62,8 @@ supers))
 	(let* ((constructor-name nil)
 		(classname nil)
 		(existe-herança nil)
-		(class-fields nil))
+		(class-fields nil)
+		(attributes '()))
 	
 	(if (listp first-arg)
 		(progn
@@ -74,21 +75,31 @@ supers))
 			(setq existe-herança nil)
 	))
 	
+	(loop for i in body
+	do (if (listp i)
+		(setf attributes (append attributes (list (first i))))
+		(setf attributes (append attributes (list i)))))
+	
+	(format t "body: ~S~%" body)
+	(format t "attributes: ~S~%" attributes)
+	
+	
 	; splice all values into containing expression - this seems useful to define make-person (arg1 arg2 ... argn)
 	(setq constructor-name (concatenate 'string "make-" (string-downcase (string classname))))
 	
 	; check for inheritance
 	(if (not existe-herança)
-		(setq class-fields body) ; no inherited fields
+		(setq class-fields attributes) ; no inherited fields
 		(let ((superclass-attribs nil)
 			 (result nil))
-			(setq class-fields body)
+			(setq class-fields attributes) ; FIXME: do always
 			(dolist (superclass (rest first-arg) result)
 				(dolist (attrib (get-class-attributes (get-class (string-downcase (string superclass)))) result)
 					(if (not (member attrib class-fields)) (push attrib result))
 				)
 			)
 			(setq class-fields (concatenate 'list class-fields result))
+			(setq body (concatenate 'list body result))
 	))
 	
 	; create class and put it in classes map
@@ -107,7 +118,7 @@ supers))
 		
 		; generate constructor
 		(defun ,(read-from-string constructor-name)	
-			(&key ,@class-fields) ; args
+			(&key ,@body) ; args
 			(let ((hashmap (make-hash-table :test #'equal)))
 				
 				; set fields

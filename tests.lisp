@@ -151,7 +151,31 @@
 	(assert-equal 4321 (pessoa-idade x))
 ))
 
+(def-class foo (a 1) (b 2))
+(define-test defaults-all
+	(let ((x (make-foo)))
+	
+	(assert-true (foo? x))
+	(assert-equal 1 (foo-a x))
+	(assert-equal 2 (foo-b x))))
 
+(define-test defaults-some
+	(let ((x (make-foo :b 3)))
+	
+	(assert-true (foo? x))
+	(assert-equal 1 (foo-a x))
+	(assert-equal 3 (foo-b x))))
+
+(def-class (bar foo) (c 3) (d 4))
+(define-test defaults-inheritance
+	(let ((x (make-bar)))
+	
+	(assert-true (bar? x))
+	(assert-equal 1 (bar-a x))
+	(assert-equal 2 (foo-b x))
+	(assert-equal 3 (bar-c x))
+	(assert-equal 4 (bar-d x))))
+	
 (setq *print-failures* t)
 (setq *print-errors* t)
 (setq *print-summary* t)
