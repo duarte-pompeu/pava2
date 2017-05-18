@@ -93,7 +93,7 @@
 			do (if (listp field)
 				(setq class-fields (concatenate 'list class-fields (list (first field))))
 				(setq class-fields (concatenate 'list class-fields (list field)))))
-
+			; the arguments for the constructor: [fields from maco] + [fields from superclasse]
 			(setq args (concatenate 'list args result))))
 
 	; create class and put it in classes map
