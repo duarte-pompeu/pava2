@@ -83,7 +83,8 @@
 				(dolist (attrib (get-class-attributes (get-class (string-downcase (string superclass)))) result)
 					(if (not (member attrib class-fields)) (push attrib result))))
 
-			; get attributes from hashmap, which can have attributes or a lists with (attribute default-value)
+			; get attributes from superclass list of attributes, which can be 
+			; simple attributes or a lists with (attribute default-value)
 			(loop for field in result
 			do (if (listp field)
 				(setq class-fields (concatenate 'list class-fields (list (first field))))
