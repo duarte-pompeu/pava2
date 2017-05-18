@@ -79,8 +79,12 @@
 		(let ((superclass-attribs nil)
 			 (result nil))
 			(setq class-fields attributes) ; FIXME: do always
+
+			; for each superclass, get list of attributes
 			(dolist (superclass (rest first-arg) result)
+				 ; for each attribute from list
 				(dolist (attrib (get-class-attributes (get-class (string-downcase (string superclass)))) result)
+					; add to current class attributes, if not repeated
 					(if (not (member attrib class-fields)) (push attrib result))))
 
 			; get attributes from superclass list of attributes, which can be 
