@@ -174,6 +174,17 @@
 	(assert-equal 30 (bar-c x))
 	(assert-equal 4 (bar-d x))))
 
+(def-class xa (nome "abc") (idade 100))
+(def-class (xb xa) (nome "def"))
+(def-class (xc xb) (idade -50))
+(define-test defaults-mixed-with-nondefaults
+	(let ((b (make-xb :idade 7))
+		(c (make-xc)))
+		
+		(format t "~S~%" (get-class "xc"))
+		(assert-equal "def" (xb-nome b))
+		(assert-equal -50 (xc-idade c))))
+
 (setq *print-failures* t)
 (setq *print-errors* t)
 (setq *print-summary* t)
