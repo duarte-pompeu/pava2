@@ -1,8 +1,10 @@
-; To run the tests: $ clisp pava-testes.lisp
+; To run the tests: 
+; $ cd test
+; $ clisp pava-testes.lisp
 
 (load "lisp-unit.lisp")
 (use-package :lisp-unit)
-(load "main.lisp")
+(load (compile-file "../src/main.lisp"))
 
 (def-class person
   name

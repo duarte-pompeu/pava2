@@ -1,8 +1,10 @@
-; To run the tests: $ clisp tests.lisp
+; To run the tests: 
+; $ cd test
+; $ clisp tests.lisp
 
 (load "lisp-unit.lisp")
 (use-package :lisp-unit)
-(load "main.lisp")
+(load (compile-file "../src/main.lisp"))
 
 (def-class pessoa nome idade)
 (setq *p1* (make-pessoa :nome "joão" :idade 18))

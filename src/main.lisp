@@ -1,7 +1,7 @@
 (defun rl()
 	(load "main.lisp"))
 
-(setq *class-hashmap* (make-hash-table :test #'equal))
+(defparameter *class-hashmap* (make-hash-table :test #'equal))
 
 (defun get-class (class-name)
 	"recebe o nome de uma classe, procura-a no hashmap e retorna a estrutura de dados correspondente, caso exista"
@@ -76,8 +76,7 @@
 	; check for inheritance
 	(if (not existe-herança)
 		(setq class-fields attributes) ; no inherited fields
-		(let ((superclass-attribs nil)
-			 (result nil))
+		(let ((result nil))
 			(setq class-fields attributes) ; FIXME: do always
 
 			; for each superclass, get list of attributes
